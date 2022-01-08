@@ -447,7 +447,7 @@ class IdleState extends State {
 
   Enter(prevState) {
     const idleAction = this._parent._proxy._animations['idle'].action;
-/*    if (prevState) {
+    if (prevState) {
       const prevAction = this._parent._proxy._animations[prevState.Name].action;
       idleAction.time = 0.0;
       idleAction.enabled = true;
@@ -458,7 +458,7 @@ class IdleState extends State {
     } else {
       idleAction.play();
     }
-    */
+    
   }
 
   Exit() {

@@ -37,13 +37,22 @@ class BasicCharacterController {
 
   _LoadModels() {
     const loader = new FBXLoader();
-    loader.setPath('./resources/zombie/');
-    loader.load('mremireh_o_desbiens.fbx', (fbx) => {
-      fbx.scale.setScalar(0.1);
+      loader.setPath('./resources/walk/');
+      console.log("Main Model LoadStart!")
+      loader.load('mremireh_o_desbiens.fbx', (fbx) => {
+      console.log("Main Model Loaded!")
+      fbx.scale.setScalar(0.01);
       fbx.traverse(c => {
         c.castShadow = true;
       });
-
+      fbx.traverse(function (child) {
+            if (child.isMesh) {
+        //       (child as THREE.Mesh).material = material
+               if (child.material) {
+                     child.material.transparent = false
+                 }
+             }
+       })
       this._target = fbx;
       this._params.scene.add(this._target);
 
@@ -66,10 +75,12 @@ class BasicCharacterController {
 
       const loader = new FBXLoader(this._manager);
       loader.setPath('./resources/zombie/');
+      console.log("LoadWalk")
       loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
       loader.load('run.fbx', (a) => { _OnLoad('run', a); });
       loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
       loader.load('dance.fbx', (a) => { _OnLoad('dance', a); });
+
     });
   }
 
@@ -102,7 +113,7 @@ class BasicCharacterController {
       acc.multiplyScalar(2.0);
     }
 
-    if (this._stateMachine._currentState.Name == 'dance') {
+    if (this._stateMachine._currentState!= null && this._stateMachine._currentState.Name == 'dance') {
       acc.multiplyScalar(0.0);
     }
 
@@ -223,6 +234,7 @@ class FiniteStateMachine {
   }
 
   _AddState(name, type) {
+//    console.log("AddState", this, name, type)
     this._states[name] = type;
   }
 
@@ -435,7 +447,7 @@ class IdleState extends State {
 
   Enter(prevState) {
     const idleAction = this._parent._proxy._animations['idle'].action;
-    if (prevState) {
+/*    if (prevState) {
       const prevAction = this._parent._proxy._animations[prevState.Name].action;
       idleAction.time = 0.0;
       idleAction.enabled = true;
@@ -446,6 +458,7 @@ class IdleState extends State {
     } else {
       idleAction.play();
     }
+    */
   }
 
   Exit() {
